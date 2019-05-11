@@ -2,22 +2,13 @@ mod utils;
 
 use wasm_bindgen::prelude::*;
 use std::fmt;
+extern crate js_sys;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
-#[wasm_bindgen]
-extern {
-    fn alert(s: &str);
-}
-
-#[wasm_bindgen]
-pub fn greet(name: &str) {
-    alert(&format!("Hello, {}!", name));
-}
 
 #[wasm_bindgen]
 #[repr(u8)]
@@ -102,10 +93,9 @@ impl Universe {
     pub fn new() -> Universe {
         let width = 64;
         let height = 64;
-
         let cells = (0..width * height)
             .map(|i| {
-                if i % 2 == 0 || i % 7 == 0 {
+                if js_sys::Math::random() < 0.7 {
                     Cell::Alive
                 } else {
                     Cell::Dead
